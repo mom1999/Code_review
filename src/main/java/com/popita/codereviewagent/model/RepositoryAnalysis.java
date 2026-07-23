@@ -13,4 +13,6 @@ public class RepositoryAnalysis {
 
     private List<ClassAnalysis> classes =
             new ArrayList<>();
+    private List<ReviewIssue> issues = new ArrayList<>();
+
 }

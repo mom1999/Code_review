@@ -14,5 +14,5 @@ public class ClassAnalysis {
     private List<String> anotation = new ArrayList<>();
     private List<MethodAnalysis> methods = new ArrayList<>();
     private List<FieldAnalysis> fields = new ArrayList<>();
-
+    private List<ReviewIssue> issues = new ArrayList<>();
 }
