@@ -75,6 +75,11 @@
             <version>3.27.1</version>
         </dependency>
         <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>7.17.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
             <version>7.2.0.202503040940-r</version>
@@ -95,8 +100,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.26.0</version>
 
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                    <linkXRef>false</linkXRef>
+                    <rulesets>
+                        <ruleset>category/java/bestpractices.xml</ruleset>
+                        <ruleset>category/java/codestyle.xml</ruleset>
+                        <ruleset>category/java/design.xml</ruleset>
+                        <ruleset>category/java/errorprone.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
         </plugins>
+
     </build>
 
 </project>

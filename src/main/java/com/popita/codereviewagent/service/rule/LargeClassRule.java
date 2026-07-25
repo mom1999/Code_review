@@ -1,5 +1,6 @@
 package com.popita.codereviewagent.service.rule;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.popita.codereviewagent.model.ClassAnalysis;
 import com.popita.codereviewagent.model.ReviewIssue;
 import org.springframework.stereotype.Component;
@@ -11,7 +12,7 @@ import java.util.List;
 public class LargeClassRule implements CodeReviewRule {
 
     @Override
-    public List<ReviewIssue> review(ClassAnalysis analysis) {
+    public List<ReviewIssue> review(CompilationUnit cu,ClassAnalysis analysis) {
 
         List<ReviewIssue> issues = new ArrayList<>();
 

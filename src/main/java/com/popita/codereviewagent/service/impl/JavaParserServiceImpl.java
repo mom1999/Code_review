@@ -9,20 +9,23 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.popita.codereviewagent.model.ClassAnalysis;
 import com.popita.codereviewagent.model.FieldAnalysis;
 import com.popita.codereviewagent.model.MethodAnalysis;
+import com.popita.codereviewagent.model.ParserResult;
 import com.popita.codereviewagent.service.JavaParserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import com.github.javaparser.StaticJavaParser;
 import java.io.IOException;
 import java.nio.file.Path;
 
+@Slf4j
 @Service
 public class JavaParserServiceImpl implements JavaParserService {
-    ClassAnalysis analysis = new ClassAnalysis();
-    @Override
-    public ClassAnalysis analyze(Path javaFile) {
 
-        System.out.println("Parsing: " + javaFile);
-        System.out.println(
+    @Override
+    public ParserResult analyze(Path javaFile) {
+
+        log.info("Parsing: " + javaFile);
+        log.info(
                 "JavaParser Version = " +
                         StaticJavaParser.class.getPackage().getImplementationVersion()
         );
@@ -33,10 +36,11 @@ public class JavaParserServiceImpl implements JavaParserService {
                 JavaParser parser = new JavaParser(configuration);
 
                 ParseResult<CompilationUnit> result = parser.parse(javaFile);
-
+                CompilationUnit cu = result.getResult().get();
+                ClassAnalysis analysis = new ClassAnalysis();
                 if(result.isSuccessful() && result.getResult().isPresent()){
 
-                    CompilationUnit cu = result.getResult().get();
+
                     analysis.setClassName(cu.getPrimaryTypeName().orElse("Unknown"));
                     cu.getPackageDeclaration().ifPresent(pkg ->analysis.setPackageName(pkg.getNameAsString()));
                     cu.findAll(MethodDeclaration.class).forEach(
@@ -68,7 +72,7 @@ public class JavaParserServiceImpl implements JavaParserService {
 
                                     );
 
-                    System.out.println("Class : " +
+                    log.info("Class : " +
                             cu.getPrimaryTypeName().orElse("Unknown"));
 
                 }
@@ -77,7 +81,7 @@ public class JavaParserServiceImpl implements JavaParserService {
                     result.getProblems().forEach(System.out::println);
 
                 }
-                return analysis;
+                return new ParserResult(cu, analysis);
             }
             catch (Exception  e){
                 throw new RuntimeException(e);

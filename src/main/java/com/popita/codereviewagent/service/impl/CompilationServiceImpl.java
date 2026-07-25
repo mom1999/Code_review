@@ -1,11 +1,13 @@
 package com.popita.codereviewagent.service.impl;
 
 import com.popita.codereviewagent.service.CompilationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Slf4j
 @Service
 public class CompilationServiceImpl implements CompilationService {
     @Override
@@ -19,8 +21,8 @@ public class CompilationServiceImpl implements CompilationService {
                     .orElse(null);
 
             if (pom != null) {
-                System.out.println("Maven project detected");
-                System.out.println("pom.xml found at : " + pom);
+                log.info("Maven project detected");
+                log.info("pom.xml found at : " + pom);
 
                 return pom.getParent();
             }
@@ -33,8 +35,8 @@ public class CompilationServiceImpl implements CompilationService {
                     .orElse(null);
 
             if (gradle != null) {
-                System.out.println("Gradle project detected");
-                System.out.println("build file found at : " + gradle);
+                log.info("Gradle project detected");
+                log.info("build file found at : " + gradle);
 
                 return gradle.getParent();
             }

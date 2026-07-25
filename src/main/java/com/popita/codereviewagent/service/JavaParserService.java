@@ -1,9 +1,11 @@
 package com.popita.codereviewagent.service;
 
-import com.popita.codereviewagent.model.ClassAnalysis;
+import com.popita.codereviewagent.model.ParserResult;
 
 import java.nio.file.Path;
 
 public interface JavaParserService {
-    ClassAnalysis analyze(Path javaFile);
+
+    ParserResult analyze(Path javaFile);
+
 }

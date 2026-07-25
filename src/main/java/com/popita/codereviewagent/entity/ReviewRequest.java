@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 @Getter
 @Setter
@@ -22,5 +24,10 @@ public class ReviewRequest {
     private LocalDateTime createdAt;
     private LocalDateTime completedAt;
 
-
+    @OneToMany(
+            mappedBy = "reviewRequest",
+            cascade = CascadeType.ALL
+    )
+    private List<ReviewIssueEntity> issues =
+            new ArrayList<>();
 }
