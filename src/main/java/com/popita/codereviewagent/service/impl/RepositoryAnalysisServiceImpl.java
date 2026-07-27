@@ -5,11 +5,7 @@ import com.popita.codereviewagent.model.ClassAnalysis;
 import com.popita.codereviewagent.model.ParserResult;
 import com.popita.codereviewagent.model.RepositoryAnalysis;
 import com.popita.codereviewagent.model.ReviewIssue;
-import com.popita.codereviewagent.service.CompilationService;
-import com.popita.codereviewagent.service.JavaParserService;
-import com.popita.codereviewagent.service.RepositoryAnalysisService;
-import com.popita.codereviewagent.service.RepositoryScannerService;
-import com.popita.codereviewagent.service.CodeAnalyzer;
+import com.popita.codereviewagent.service.*;
 import com.popita.codereviewagent.service.review.ReviewEngine;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -36,14 +34,14 @@ public class RepositoryAnalysisServiceImpl
 
     private final List<CodeAnalyzer> analyzers;
 
-
+    private final AiReviewService aiReviewService;
 
     public RepositoryAnalysisServiceImpl(
             RepositoryScannerService repositoryScannerService,
             JavaParserService javaParserService,
             CompilationService compilationService,
             ReviewEngine reviewEngine,
-            List<CodeAnalyzer> analyzers) {
+            List<CodeAnalyzer> analyzers, AiReviewService aiReviewService) {
 
 
         this.repositoryScannerService = repositoryScannerService;
@@ -55,6 +53,7 @@ public class RepositoryAnalysisServiceImpl
         this.reviewEngine = reviewEngine;
 
         this.analyzers = analyzers;
+        this.aiReviewService = aiReviewService;
     }
 
 
@@ -78,7 +77,7 @@ public class RepositoryAnalysisServiceImpl
         RepositoryAnalysis repositoryAnalysis =
                 new RepositoryAnalysis();
 
-
+        Map<String, ParserResult> parserResults = new HashMap<>();
 
         List<Path> javaFiles =
                 repositoryScannerService
@@ -99,7 +98,11 @@ public class RepositoryAnalysisServiceImpl
             ParserResult parserResult =
                     javaParserService.analyze(javaFile);
 
-
+            //store compilation unit for the AI communication
+            parserResults.put(
+                    parserResult.getClassAnalysis().getClassName(),
+                    parserResult
+            );
 
             ClassAnalysis classAnalysis =
                     parserResult.getClassAnalysis();
@@ -166,7 +169,21 @@ public class RepositoryAnalysisServiceImpl
                     .addAll(issues);
 
         }
+        for (ClassAnalysis classAnalysis : repositoryAnalysis.getClasses()) {
+            ParserResult parserResult =
+                    parserResults.get(classAnalysis.getClassName());
+            if(parserResult == null){
+                continue;
+            }
+            List<ReviewIssue> existingIssues =repositoryAnalysis.getIssues().stream()
+                    .toList();
+            List<ReviewIssue> aiIssues =aiReviewService.analyze(parserResult.getCompilationUnit()
+                    ,classAnalysis,existingIssues);
 
+            repositoryAnalysis
+                    .getIssues()
+                    .addAll(aiIssues);
+        }
 
 
         log.info(
