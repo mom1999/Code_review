@@ -6,7 +6,7 @@ The idea behind this project is simple: tools like **PMD and SpotBugs are good a
 
 ---
 
-## 💡 Why I Built This
+##  Why I Built This
 
 While working with large Java codebases, static-analysis tools can generate a lot of findings. Developers still need to go through those findings and understand whether they are important and how to fix them.
 
@@ -119,7 +119,7 @@ The overall flow is:
 
 ---
 
-# 🔄 Step-by-Step Flow
+# Step-by-Step Flow
 
 ## 1. Repository Submission
 
@@ -201,7 +201,7 @@ The application parses this report and extracts information such as:
 
 ---
 
-# 🤖 Where Does AI Come In?
+#  Where Does AI Come In?
 
 This is the part that makes the project different from a normal static-analysis tool.
 
@@ -249,7 +249,7 @@ This keeps the AI part focused on the actual findings instead of asking the mode
 
 ---
 
-# 🧠 Why Not Ask Gemini to Review Everything?
+#  Why Not Ask Gemini to Review Everything?
 
 That was an important design decision in this project.
 
@@ -277,7 +277,7 @@ So the static-analysis tools are responsible for **finding**, while Gemini is re
 
 ---
 
-# 🗃️ Database
+#  Database
 
 The project currently uses **H2** to keep the setup simple.
 
@@ -331,7 +331,7 @@ So one review request can have multiple issues.
 
 ---
 
-# 🛠️ Tech Stack
+# Tech Stack
 
 ### Backend
 
@@ -362,7 +362,7 @@ So one review request can have multiple issues.
 
 ---
 
-# 📂 Project Structure
+#  Project Structure
 
 The project is organized into separate layers so that each part has a clear responsibility.
 
